@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victoria’s Secret Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Imperial+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+  <div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo" title="Victoria's Secret Planner logo">
+        <!--logo-->
+        <a href="./scam_page.html" class="scam-link" target="_blank">
+          <img src="./img/logo_for_Victoria's_Secret_Planner_is_displayed_.png.png" alt="logo">
+        </a>
+    </div>
+
+    <div class="controls">
+      <div class="month-control" role="toolbar" aria-label="Month navigation">
+        <button class="nav-btn" id="prevBtn" title="Previous month">←</button>
+        <div class="month-title" id="monthTitle">Month Year</div>
+        <button class="nav-btn" id="nextBtn" title="Next month">→</button>
+      </div>
+
+      <button class="action-btn" id="freeToggle">Free Days</button>
+      <!-- <button class="action-btn" id="tgConfigBtn">Telegram</button>
+      <button class="action-btn" id="gsConfigBtn">Sync to Google Sheets</button> -->
+    </div>
+  </header>
+
+  <main>
+    <!-- side panel with FREE DAYS -->
+    <div class="layout">
+
+      <aside class="side-panel" id="plannedEvents">
+        <div>
+          <div class="panel-title">Planned Events</div>
+          <div class="muted">Planned events this month</div>
+        </div>
+
+        <div class="planned-list" id="plannedList">
+          <!-- months -->
+        </div>
+
+        <div style="border-top:1px dashed #eee; padding-top:10px;">
+          <div class="muted">Quick actions</div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn" id="exportCsvBtn">Export CSV</button>
+            <button class="btn ghost" id="clearAllBtn">Clear All</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Calendar -->
+      <section class="calendar-card" aria-label="Calendar">
+        <div class="weekday-row" id="weekdayRow"></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </section>
+
+      <!-- Side panel with NO EVENTS -->
+      <aside class="side-panel" id="freeDaysList">
+        <div>
+          <div class="panel-title">Free Days</div>
+          <div class="muted">Days with no events this month</div>
+        </div>
+
+        <div class="free-list" id="freeList">
+          <!-- free days list -->
+        </div>
+
+        <div style="border-top:1px dashed #eee; padding-top:10px;">
+          <div class="muted">Quick actions</div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn" id="exportCsvBtn">Export CSV</button>
+            <button class="btn ghost" id="clearAllBtn">Clear All</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<!-- Modal for add/edit event -->
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Add event</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label class="small">Date 
+        <input id="evtDate" type="date" />
+      </label>
+      <label class="small">Time 
+        <input id="evtTimeStart" type="time" />
+        <input id="evtTimeEnd" type="time" />
+      </label>
+      <label class="small">Title 
+        <input id="evtTitle" type="text" placeholder="Event title" />
+      </label>
+      <label class="small">Type
+
+        <!-- В перспективе: сделать кастомный селект для полноценной работы курсора -->
+        <select id="evtType">
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="date">Date</option>
+        </select>
+      </label>
+      <label class="small">Notes <textarea id="evtNotes" rows="3" placeholder="Optional notes"></textarea></label>
+    </div>
+
+    <div class="modal-actions" style="margin-top:10px;">
+      <button class="btn ghost" id="btnCancel">Cancel</button>
+      <button class="btn ghost" id="btnDelete" style="display:none;background:var(--danger); color:white">Delete</button>
+      <button class="btn" id="btnSave">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Happy cat after save event -->
+<div class="cat-wrap hidden">
+  <div class="cat-inner">
+    <img src="./img/happy_cat.gif" class="happy-cat" alt="happy cat">
+    <h2 class="cat-text">Date succesfully added!</h2>
+  </div>
+</div>
+
+<!-- Telegram config modal -->
+<div class="modal-backdrop" id="tgBackdrop" style="display:none">
+  <div class="modal">
+    <h3>Telegram Notifications</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label class="small">Bot token <input id="tgToken" placeholder="123456:ABC-DEF..." /></label>
+      <label class="small">Chat ID <input id="tgChatId" placeholder="@username or chat id" /></label>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" id="tgTestBtn">Send test</button>
+        <button class="btn ghost" id="tgCloseBtn">Close</button>
+      </div>
+      <div id="tgStatus" class="small muted"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Sheets config modal -->
+<div class="modal-backdrop" id="gsBackdrop" style="display:none">
+  <div class="modal">
+    <h3>Google Sheets Sync</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label class="small">Apps Script Webhook URL (optional)
+        <input id="gsEndpoint" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+      </label>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="gsSyncBtn">Sync now</button>
+        <button class="btn ghost" id="gsCloseBtn">Close</button>
+        <button class="btn ghost" id="gsDownloadBtn">Download CSV</button>
+      </div>
+      <div id="gsStatus" class="small muted"></div>
+    </div>
+  </div>
+</div>
+
+  <script src="./src/main.js"></script>
+</body>
+</html>

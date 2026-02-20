@@ -1,0 +1,156 @@
+:root {
+  --lavender: #b79be2;
+  --lavender-200: #d9c4f0;
+  --lavender-50: #f5effc;
+  --bg: #fbf9fd;
+  --muted: #6b6b6b;
+  --card: #ffffff;
+  --success: #7ad29d;
+  --danger: #ef8b8b;
+  --accent: #b79be2;
+}
+
+.hide {
+  display: none;
+}
+
+body {
+  background-color: var(--lavender-50); 
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.main-section {
+  background-color: var(--lavender);
+  max-width: 720px;
+  min-height: 640px;
+  border-radius: 10px;
+  padding: 40px;
+  margin: 50px auto;
+  box-shadow: 3px 3px 20px #6b6b6b;
+}
+
+.scam-cat {
+  display: block;
+  margin: 0 auto;
+  max-width: 50%;
+  max-height: 50%;
+  border-radius: 20px;
+  box-shadow: 1px 3px 5px #6b6b6b;
+  width: 100%;
+  height: 100%;
+}
+
+
+.text-wrap {
+
+}
+
+.scam-text{
+  text-align: center;
+  font-size: 24px;
+}
+
+.btns-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.footer-text{
+  text-align: center;
+  padding: 20px;
+}
+
+/* -------- BTN NO -------- */
+
+.btn-no {
+  background-color: #ebebeb;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222222;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  padding: 13px 23px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+.btn-no:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow .2s;
+}
+
+.btn-no:active {
+  background-color: #F7F7F7;
+  border-color: #000000;
+  transform: scale(.96);
+}
+
+.btn-no:disabled {
+  border-color: #DDDDDD;
+  color: #DDDDDD;
+  cursor: not-allowed;
+  opacity: 1;
+}
+/* ---------------------------------------------------- */
+
+/* heart-like-btn */
+.btn-like {
+  width: 10rem;
+  height: 8rem;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(0%, 0%);
+
+  cursor: pointer;
+}
+.btn-like:hover::before,
+.btn-like:hover::after {
+  background: #f7fafe;
+}
+
+.btn-like::before,
+.btn-like::after {
+  content: "";
+
+  position: absolute;
+
+  width: 5rem;
+  height: 8rem;
+
+  background: #9ca3af;
+  border-radius: 5rem 5em 1rem 1rem;
+
+  transition: background 0.6s;
+}
+
+.btn-like::before {
+  left: 5rem;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+.btn-like::after {
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+.btn-like.liked::before,
+.btn-like.liked::after {
+  background: #9249ffff;
+}
+/* ---------------------------------------- */
