@@ -372,6 +372,7 @@ button:disabled {
 }
 
 .scam-link {
+  cursor: var(--paw_pointer);
 }
 
 /* responsive */

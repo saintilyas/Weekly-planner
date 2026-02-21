@@ -8,28 +8,49 @@
   --success: #7ad29d;
   --danger: #ef8b8b;
   --accent: #b79be2;
+  --paw_pointer: url("../img/cursors/cursor_pointer_32x32.png") 0 0, pointer;
+  --paw-hover: url("../img/cursors/cursor_hover_32x32.png") 0 0, hover;
 }
 
 .hide {
   display: none;
 }
 
-body {
+html {
   background-color: var(--lavender-50); 
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  cursor: url("../img/cursors/cursor_auto_32x32.png") 0 0, auto;
 }
 
-.main-section {
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  cursor: var(--paw_pointer)
+}
+
+.main-section,
+.success-section {
+ padding: 40px; 
+}
+
+.main-wrap,
+.success-section-wrap {
   background-color: var(--lavender);
   max-width: 720px;
   min-height: 640px;
   border-radius: 10px;
-  padding: 40px;
-  margin: 50px auto;
+  margin: 0 auto;
   box-shadow: 3px 3px 20px #6b6b6b;
+  padding: 40px;
 }
 
-.scam-cat {
+.scam-cat,
+.happy-dog {
   display: block;
   margin: 0 auto;
   max-width: 50%;
@@ -69,7 +90,7 @@ body {
   border-radius: 8px;
   box-sizing: border-box;
   color: #222222;
-  cursor: pointer;
+  cursor: var(--paw_pointer);
   display: inline-block;
   font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
   font-size: 16px;
@@ -86,6 +107,11 @@ body {
   user-select: none;
   -webkit-user-select: none;
   width: auto;
+
+   transition: 
+        transform 0.4s ease,
+        opacity 0.4s ease,
+        transform 0.4s ease;
 }
 
 .btn-no:focus-visible {
@@ -105,6 +131,12 @@ body {
   cursor: not-allowed;
   opacity: 1;
 }
+
+.btn-no.hidden{
+    opacity:0;
+    transform:scale(0.5);
+    pointer-events:none;
+}
 /* ---------------------------------------------------- */
 
 /* heart-like-btn */
@@ -116,7 +148,7 @@ body {
   left: 50%;
   transform: translate(0%, 0%);
 
-  cursor: pointer;
+  cursor: var(--paw_pointer);
 }
 .btn-like:hover::before,
 .btn-like:hover::after {

@@ -8,6 +8,8 @@ const state = {
   editing: null // {date,id} when editing
 };
 
+
+
 // localStorage key
 const STORAGE_KEY = 'vsp_planner_events_v1';
 
@@ -162,6 +164,17 @@ function renderCalendar(){
 }
 
 /* ---------------------------
+  Add rndom event btn
+----------------------------*/
+
+const rndmEvtBtn = document.getElementById("rndmEvtBtn");
+
+rndmEvtBtn.addEventListener("click", () => {
+  openAddModal();
+});
+
+
+/* ---------------------------
   Free days / free time slots
 ----------------------------*/
 const freeListEl = document.getElementById('freeList');
@@ -177,10 +190,10 @@ function minutesToTime(m){
   return `${hh}:${mm}`;
 }
 
-// For a given date, compute free slots between dayStart (08:00) and dayEnd (20:00).
+// For a given date, compute free slots between dayStart (00:00) and dayEnd (24:00).
 function freeSlotsForDate(dateIso){
-  const dayStart = 8*60;
-  const dayEnd = 20*60;
+  const dayStart = 0*60;
+  const dayEnd = 24*60;
   const evs = (state.events[dateIso] || []).map(ev=>{
     const start = parseTimeToMinutes(ev.time) || null;
     // assume 60min duration if time exists, otherwise no time => treat whole-day event
@@ -269,6 +282,10 @@ function openAddModal(dateIso){
   evtNotes.value = '';
   btnDelete.style.display = 'none';
   evtTitle.focus();
+
+  if (!evtDate.value || ! evtTimeStart.value || !evtTimeEnd.value || !evtTitle.value || !evtType.value) {
+
+  }
 }
 
 function openEditModal(dateIso, ev){

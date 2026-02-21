@@ -4,6 +4,7 @@ const DURATION_MULTIPLIER = 30;
 
 const button = document.querySelector(".btn-like");
 const mainSection = document.querySelector(".main-section");
+const successSection = document.querySelector(".success-section");
 
 const moTimeline = new mojs.Timeline();
 const moScaleCurve = mojs.easing.path("M0 100H15.5C51 54.5 14.5 7.5 100 0");
@@ -36,17 +37,40 @@ button.addEventListener("click", () => {
     moTimeline.play();
     button.classList.add("liked");
     setTimeout(() => {
-      mainSection.classList.add("hide")
+      mainSection.classList.add("hide");
+      successSection.classList.remove("hide");
     }, 3000);
 });
 
-// btn-no moving
+//-------- btn move and hide after 5 hovers ------------//
 
-const NoBtn = document.querySelector('.btn-no');
-// const cursorX = 
+const noBtn = document.querySelector('.btn-no');
+let hoverCount = 0;
 
-NoBtn.addEventListener('mouseover', () => {
-  NoBtn.style.position = 'absolute';
-  NoBtn.style.left = `${Math.ceil(Math.random() * 90)}%`;
-  NoBtn.style.top = `${Math.ceil(Math.random() * 90)}%`;
+noBtn.addEventListener("mouseenter", () => {
+  hoverCount++;
+
+  if (hoverCount < 5) {
+
+    const card = document.querySelector ('.main-wrap');
+    const cardRect = card.getBoundingClientRect();
+    const noBtnRect = noBtn.getBoundingClientRect();
+
+    console.log(cardRect, noBtnRect)
+    const posX = Math.floor(cardRect.width - noBtnRect.width) / 2;
+    const posY = Math.floor(cardRect.height - noBtnRect.height) / 2;
+    console.log(posX, posY);
+
+    const randomX = Math.random() * (posX * 2) - posX;
+    const randomY = Math.random() * (posY * 2) - posY;
+
+    console.log(randomX, randomY)
+    
+    noBtn.style.position = "absolute"
+    noBtn.style.left = "50%";
+    noBtn.style.top = "50%";
+    noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  } else {
+    noBtn.classList.add("hidden");
+  }
 })
