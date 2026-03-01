@@ -173,7 +173,6 @@ rndmEvtBtn.addEventListener("click", () => {
   openAddModal();
 });
 
-
 /* ---------------------------
   Free days / free time slots
 ----------------------------*/
@@ -257,7 +256,7 @@ function renderFreeDaysList(){
 }
 
 /* ---------------------------
-  Modal logic (add/edit/delete)
+  Modal logic (add/edit/delete/alert)
 ----------------------------*/
 const modalBackdrop = document.getElementById('modalBackdrop');
 const evtDate = document.getElementById('evtDate');
@@ -269,6 +268,7 @@ const evtNotes = document.getElementById('evtNotes');
 const btnSave = document.getElementById('btnSave');
 const btnCancel = document.getElementById('btnCancel');
 const btnDelete = document.getElementById('btnDelete');
+const confirmAlert = document.getElementById('confirmAlert');
 
 function openAddModal(dateIso){
   state.editing = null;
@@ -283,9 +283,6 @@ function openAddModal(dateIso){
   btnDelete.style.display = 'none';
   evtTitle.focus();
 
-  if (!evtDate.value || ! evtTimeStart.value || !evtTimeEnd.value || !evtTitle.value || !evtType.value) {
-
-  }
 }
 
 function openEditModal(dateIso, ev){
@@ -303,12 +300,15 @@ function openEditModal(dateIso, ev){
 }
 
 btnCancel.addEventListener('click', ()=>{
-  closeModal();
+  if (evtDate.value || evtTimeStart.value || evtTimeEnd.value || evtTitle.value || evtType.value) {
+    alertModal(true, "", "Unsaved data will be lost.")
+  }
 });
 modalBackdrop.addEventListener('click', (e)=>{
   if(e.target === modalBackdrop){
-    // close without saving
-    closeModal();
+    if (evtDate.value || evtTimeStart.value || evtTimeEnd.value || evtTitle.value || evtType.value){
+      alertModal(true, "", "Unsaved data will be lost.");
+    }
   }
 });
 
@@ -319,9 +319,11 @@ btnSave.addEventListener('click', ()=>{
   const title = evtTitle.value.trim() || '(no title)';
   const type = evtType.value;
   const notes = evtNotes.value || '';
-
-  if(!date) { 
-    alert('Please choose a date'); 
+  const currentDate = new Date();
+  console.log(date, currentDate)
+  
+  if(!date ) { 
+    alertModal(false, "Warning!", 'Please choose correct date'); 
     return; 
   }
 
@@ -349,16 +351,61 @@ btnSave.addEventListener('click', ()=>{
   renderCalendar();
 });
 
-btnDelete.addEventListener('click', ()=>{
+function deleteEvent() {
   if(!state.editing) return;
-  if(!confirm('Delete this event?')) return;
   const list = state.events[state.editing.date] || [];
   state.events[state.editing.date] = list.filter(x=>x.id !== state.editing.id);
   if(state.events[state.editing.date].length === 0) delete state.events[state.editing.date];
   saveEvents();
   closeModal();
   renderCalendar();
-});
+}
+
+btnDelete.addEventListener("click", () => {
+  alertModal(true, "", "");
+})
+
+
+function alertModal(question, title, text) {
+  const btns = document.querySelectorAll(".alert-actions");
+  confirmAlert.style.display = "flex";
+  const yesBtn = document.getElementById("alertYes");
+  const noBtn = document.getElementById("alertNo");
+  const okBtn = document.getElementById("alertOk");
+  const textAlert = document.querySelector(".alert-text");
+  const titleAlert = document.querySelector(".alert-title");
+
+  if (!question) {
+    btns[1].style.display = "none";
+    btns[0].style.display = "block";
+  } if (question) {
+    btns[1].style.display = "block";
+    btns[0].style.display = "none";
+  }
+
+  title ? titleAlert.innerText = title : titleAlert.innerText = "Are you sure?";
+  text ? textAlert.innerText = text : textAlert.innerText = "This action cannot be undone.";
+
+  noBtn.addEventListener("click", () => {
+    confirmAlert.style.display = "none";
+  });
+
+  okBtn.addEventListener("click", () => {
+    confirmAlert.style.display = "none";
+  });
+
+  yesBtn.addEventListener("click", () => {
+    confirmAlert.style.display = "none";
+    if (!state.editing.id) {
+      deleteEvent();
+      closeModal();
+    } else {
+      closeModal();
+    }
+
+  });
+}
+
 
 function closeModal(){
   modalBackdrop.style.display = 'none';

@@ -1,4 +1,5 @@
 :root {
+  --pink: #f2b2ca;
   --lavender: #b79be2;
   --lavender-200: #d9c4f0;
   --lavender-50: #f5effc;
@@ -40,14 +41,13 @@ body {
   color: #333;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  justify-content: center;
 }
 
 .app {
   width: 100%;
   max-width: 1300px;
   background: transparent;
+  margin: 0 auto;
 }
 
 .brand {
@@ -320,6 +320,38 @@ main {
   color: #444;
 }
 
+/* Container */
+.input-group {
+  position: relative;
+  width: 280px;
+  margin: 20px 0;
+}
+
+/* Input */
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #d8c8f8;
+  background: rgba(255,255,255,0.9);
+  font-size: 14px;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+/* Focus */
+.input-group input:focus {
+  border-color: #CDB4F6;
+  box-shadow: 0 0 0 4px rgba(205,180,246,0.2);
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+  top: -8px;
+  font-size: 11px;
+  color: #5a4a7a;
+} 
+
 /* small helpers */
 .muted {
   color: var(--muted);
@@ -330,6 +362,9 @@ main {
 }
 
 .cat-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -361,10 +396,6 @@ main {
   font-style: normal;
 }
 
-.hidden {
-  display: none;
-}
-
 button:disabled {
   cursor:
     url("../img/cursors/cursor_disabled_32x32.png") 16 16,
@@ -373,6 +404,122 @@ button:disabled {
 
 .scam-link {
   cursor: var(--paw_pointer);
+}
+
+
+/* =========== Alert modal ============= */
+
+.alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(205, 180, 246, 0.15);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.alert {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(150, 120, 200, 0.2);
+  text-align: center;
+  animation: modalAppear 0.25s ease;
+}
+
+/* Typography */
+.alert-title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #5a4a7a;
+}
+
+.alert-text {
+  font-size: 14px;
+  color: #6d5f8c;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.alert-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  cursor: var(--paw-hover);
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #CDB4F6;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #b79be8;
+}
+
+.btn-secondary {
+  background: #f2effa;
+  color: #5a4a7a;
+}
+
+.btn-secondary:hover {
+  background: #e4def5;
+}
+
+.btn-danger {
+  background: #f6b4d4;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #e89ac2;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Animation */
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ====================================================== */
+/* 
+#modalBackdrop {
+  display: flex;
+} */
+
+footer {
+  text-align: center; 
+  margin: 40px;
+  padding: 40px 0; 
+  color: var(--muted);
+  font-size: 13px; 
+  animation: fadeDown 0.7s 0.8s ease both;
+}
+.heart { 
+  color: var(--pink); 
+}
+
+.hidden {
+  display: none;
 }
 
 /* responsive */

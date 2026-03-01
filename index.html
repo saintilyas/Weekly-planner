@@ -86,25 +86,53 @@
   </main>
 </div>
 
+<!-- Alert modal/ confirm modal-->
+ <!-- Разделить форму подтверждения и форму предупреждения -->
+<div class="alert-overlay" id="confirmAlert">
+  <div class="alert">
+    <h3 class="alert-title">Are you sure?</h3>
+    <p class="alert-text">
+      This action cannot be undone.
+    </p>
+
+    <div class="alert-actions">
+      <button class="alert-btn btn-danger" id="alertOk">
+        Okay
+      </button>
+    </div>
+    <div class="alert-actions">
+      <button class="alert-btn btn-secondary" id="alertNo">
+        No
+      </button>
+      <button class="alert-btn btn-danger" id="alertYes">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal for add/edit event -->
-<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Add event</h3>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <label class="small">Date 
-        <input id="evtDate" type="date" />
+    <div class="input-group">
+      <label for="evtDate" class="small">Date 
+        <input id="evtDate" type="date" required/>
       </label>
-      <label class="small">Time 
-        <input id="evtTimeStart" type="time" />
-        <input id="evtTimeEnd" type="time" />
+      <label for="evtTimeStart" class="small">Time start
+        <input id="evtTimeStart" type="time" required/>
+      </label> 
+      <label for="evtTimeEnd" class="small">
+        <input id="evtTimeEnd" type="time" required/>
       </label>
       <label class="small">Title 
-        <input id="evtTitle" type="text" placeholder="Event title" />
+        <input id="evtTitle" type="text" placeholder="Event title" required />
       </label>
+      
       <label class="small">Type
 
         <!-- В перспективе: сделать кастомный селект для полноценной работы курсора -->
-        <select id="evtType">
+        <select id="evtType" required>
           <option value="work">Work</option>
           <option value="personal">Personal</option>
           <option value="date">Date</option>
@@ -163,6 +191,10 @@
     </div>
   </div>
 </div>
+
+<footer>
+  Сделано с <span class="heart">♥</span> для Виктории &nbsp;·&nbsp;
+</footer>
 
   <script src="./src/main.js"></script>
 </body>
