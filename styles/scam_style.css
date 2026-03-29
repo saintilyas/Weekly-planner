@@ -8,8 +8,8 @@
   --success: #7ad29d;
   --danger: #ef8b8b;
   --accent: #b79be2;
-  --paw_pointer: url("../img/cursors/cursor_pointer_32x32.png") 0 0, pointer;
-  --paw-hover: url("../img/cursors/cursor_hover_32x32.png") 0 0, hover;
+  --paw_pointer: url("../img/cursors/cursor_pointer_32x32111.png") 16 20, pointer;
+  --paw-disabled: url("../img/cursors/cursor_disabled_32x32111.png") 16 20, not-allowed;
 }
 
 .hide {
@@ -19,7 +19,7 @@
 html {
   background-color: var(--lavender-50); 
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  cursor: url("../img/cursors/cursor_auto_32x32.png") 0 0, auto;
+  cursor: var(--paw_pointer);
 }
 
 body {
@@ -30,7 +30,7 @@ body {
 }
 
 a {
-  cursor: var(--paw_pointer)
+  cursor: var(--paw-disabled)
 }
 
 .main-section,

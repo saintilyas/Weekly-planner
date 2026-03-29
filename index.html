@@ -39,22 +39,23 @@
     <div class="layout">
 
       <aside class="side-panel" id="plannedEvents">
-        <div>
-          <div class="panel-title">Planned Events</div>
-          <div class="muted">Planned events this month</div>
-        </div>
-
-        <div class="planned-list" id="plannedList">
-          <!-- months -->
-        </div>
-
-        <div style="border-top:1px dashed #eee; padding-top:10px;">
-          <div class="muted">Quick actions</div>
-          <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="btn" id="exportCsvBtn">Export CSV</button>
-            <button class="btn ghost" id="clearAllBtn">Clear All</button>
+         <div class="panel-title">
+            Menu
           </div>
-        </div>
+          <nav class="side-nav">
+            <button class="side-nav-item active" data-tab="events">
+              <img src="./img/icons/calendar.png" class="menu-icon" alt="calendar"> Events
+            </button>
+            <button class="side-nav-item" data-tab="tasks">
+              <img src="./img/icons/to-do-list.png" class="menu-icon" alt="to-do-list"> Tasks
+            </button>
+            <button class="side-nav-item" data-tab="ai">
+              <img src="./img/icons/ai-technology.png" class="menu-icon" alt="ai">AI
+            </button>
+            <button class="side-nav-item" data-tab="habits">
+              <img src="./img/icons/ai-technology.png" class="menu-icon" alt="habits">Habits
+            </button>
+          </nav>
       </aside>
 
       <!-- Calendar -->
@@ -86,25 +87,64 @@
   </main>
 </div>
 
+<!-- Alert modal/ confirm modal-->
+
+ <!-- Форма confirm -->
+<div class="alert-overlay" id="confirmAlert">
+  <div class="alert">
+    <h3 class="alert-title" id="confirmTitle">Are you sure?</h3>
+    <p class="alert-text" id="confirmText">
+      This action cannot be undone.
+    </p>
+    <div class="alert-actions">
+      <button class="alert-btn btn-secondary" id="alertNo">
+        No
+      </button>
+      <button class="alert-btn btn-danger" id="alertYes">
+        Yes
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!--  Форма alert   -->
+<div class="alert-overlay" id="alertModal">
+  <div class="alert">
+    <h3 class="alert-title" id="alertTitle">Success</h3>
+    <p class="alert-text" id="alertText">
+      This action done.
+    </p>
+
+    <div class="alert-actions">
+      <button class="alert-btn btn-danger" id="alertOk">
+        Okay
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal for add/edit event -->
-<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Add event</h3>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <label class="small">Date 
-        <input id="evtDate" type="date" />
+    <div class="input-group">
+      <label for="evtDate" class="small">Date 
+        <input id="evtDate" type="date" required/>
       </label>
-      <label class="small">Time 
-        <input id="evtTimeStart" type="time" />
-        <input id="evtTimeEnd" type="time" />
+      <label for="evtTimeStart" class="small">Time start
+        <input id="evtTimeStart" type="time" required/>
+      </label> 
+      <label for="evtTimeEnd" class="small">
+        <input id="evtTimeEnd" type="time" required/>
       </label>
       <label class="small">Title 
-        <input id="evtTitle" type="text" placeholder="Event title" />
+        <input id="evtTitle" type="text" placeholder="Event title" required />
       </label>
+      
       <label class="small">Type
 
-        <!-- В перспективе: сделать кастомный селект для полноценной работы курсора -->
-        <select id="evtType">
+        <!-- В работе: сделать кастомный селект для полноценной работы курсора -->
+        <select id="evtType" required>
           <option value="work">Work</option>
           <option value="personal">Personal</option>
           <option value="date">Date</option>
@@ -163,6 +203,83 @@
     </div>
   </div>
 </div>
+
+<!-- Welcome modal -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-modal" id="welcomeModal">
+ 
+    <div class="welcome-deco" aria-hidden="true">
+      <span class="deco-circle c1"></span>
+      <span class="deco-circle c2"></span>
+      <span class="deco-circle c3"></span>
+    </div>
+ 
+    <button class="welcome-close" id="welcomeClose" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/>
+      </svg>
+    </button>
+ 
+    <div class="welcome-body">
+      <div class="welcome-icon" aria-hidden="true">✦</div>
+      <h2 class="welcome-title">Welcome back!</h2>
+      <p class="welcome-text">Here's a quick look at what awaits you today.</p>
+ 
+      <div class="welcome-stats">
+        <div class="wstat">
+          <span class="wstat-num" id="wToday">—</span>
+          <span class="wstat-label">today's events</span>
+        </div>
+        <div class="wstat-divider"></div>
+        <div class="wstat">
+          <span class="wstat-num" id="wTasks">—</span>
+          <span class="wstat-label">today's tasks</span>
+        </div>
+        <div class="wstat-divider"></div>
+        <div class="wstat">
+          <span class="wstat-num" id="wDate">—</span>
+          <span class="wstat-label">today</span>
+        </div>
+      </div>
+ 
+      <div class="welcome-actions">
+        <button class="btn welcome-btn-primary" id="welcomeStart">Open Planner ✦</button>
+        <!-- <button class="btn ghost welcome-btn-ghost" id="welcomeSkip">Maybe later</button> -->
+      </div>
+    </div>
+ 
+  </div>
+</div>
+
+<div class="user-overlay" id="userModal">
+  <div class="user-modal">
+
+    <div class="user-header">
+      <h2>Welcome 💜</h2>
+      <p>Let’s personalize your planner</p>
+    </div>
+
+    <div class="user-input-group">
+      <input type="text" id="userName" required />
+      <label for="userName">Your name</label>
+    </div>
+
+    <div class="input-group">
+      <input type="date" id="userBirthday" required />
+      <label for="userBirthday">Birthday</label>
+    </div>
+
+    <button class="btn-primary" id="userContinueBtn">
+      Continue
+    </button>
+
+  </div>
+</div>
+
+<footer>
+  <clock-timepicker></clock-timepicker>
+  Сделано с <span class="heart">♥</span> для Виктории &nbsp;·&nbsp;
+</footer>
 
   <script src="./src/main.js"></script>
 </body>
