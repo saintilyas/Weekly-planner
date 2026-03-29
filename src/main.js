@@ -8,10 +8,38 @@ const state = {
   editing: null // {date,id} when editing
 };
 
-
-
-// localStorage key
+// localStorage keys
 const STORAGE_KEY = 'vsp_planner_events_v1';
+const LAST_VISITED_TIME = 'last_visited_time_v1';
+const USER_DATA= 'user_data_v1';
+
+
+function saveUserData() {
+  const name = document.getElementById("userName").value;
+  const birthday = document.getElementById("userBirthday").value;
+
+  if (!name || !birthday) return;
+
+  localStorage.setItem(USER_DATA, JSON.stringify(
+    { name: name,
+      birthday: birthday }
+  ));
+
+  document.getElementById("userModal").style.display = "none";
+  
+}
+
+// Показываем только первый раз
+window.addEventListener("load", () => {
+  const user = localStorage.getItem(USER_DATA) || null;
+  if (!user) {
+    document.getElementById("userModal").style.display = "flex";
+  } else {
+    document.getElementById("userModal").style.display = "none";
+  }
+});
+
+document.getElementById("userContinueBtn").addEventListener("click", saveUserData);
 
 // load events from localStorage
 function loadEvents() {
@@ -23,6 +51,106 @@ function loadEvents() {
     state.events = {};
   }
 }
+
+function setVisitedData() {
+  const now = new Date();
+  localStorage.setItem(LAST_VISITED_TIME, JSON.stringify({
+        year: now.getFullYear(),
+        month: now.getMonth(),
+        date: now.getDate(),
+        hours: now.getHours(),
+        minutes: now.getMinutes(),
+    }));
+}
+
+
+/* ---------------------------
+  Show welcome modal function
+----------------------------*/
+(function () {
+  const overlay = document.getElementById('welcomeOverlay');
+  const modal   = document.getElementById('welcomeModal');
+  const welcomeTitle = document.querySelector('.welcome-title');
+  const welcomeText = document.querySelector('.welcome-text');
+ 
+  const userData = localStorage.getItem(USER_DATA);
+  const user = JSON.parse(userData) || null;
+  const data = localStorage.getItem(LAST_VISITED_TIME);
+  const lastVisitedTime = JSON.parse(data) || null;
+
+  const now = new Date();
+  const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('wDate').textContent =
+    dayNames[now.getDay()] + ', ' + monthNames[now.getMonth()] + ' ' + now.getDate();
+    
+  const dayTime = now.getHours();
+  if(userData){
+    if (!lastVisitedTime){
+    setTimeout(() => overlay.classList.add('visible'), 320);  
+    setVisitedData();
+  } 
+  if(lastVisitedTime){
+    if (lastVisitedTime.date < now.getDate() || lastVisitedTime.month < now.getMonth() || lastVisitedTime.year < now.getFullYear()) {
+        setTimeout(() => overlay.classList.add('visible'), 320);
+        
+        switch (true) {
+          case dayTime < 5:
+            welcomeTitle.textContent = `Good night, ${user.name}! `;
+            welcomeText.textContent = 'The world is quiet and calm. A perfect time to dream about your plans.';
+            setVisitedData();
+            break;
+          case dayTime < 12:
+            welcomeTitle.textContent = `Good morning, ${user.name} `;
+            welcomeText.textContent = 'A new day full of opportunities awaits you. Let\'s see what\'s on your schedule.';
+            setVisitedData();
+            break;
+          case dayTime < 18:
+            welcomeTitle.textContent = `Good afternoon, ${user.name} `;
+            welcomeText.textContent = 'Hope your day is going well. Here\'s a quick look at what\'s coming up.';
+            setVisitedData();
+            break;
+          case dayTime < 24:
+            welcomeTitle.textContent = `Good evening,${user.name} `;
+            welcomeText.textContent = 'The day is winding down. Let\'s check what you have planned for the rest of the day and tomorrow.';
+            setVisitedData();
+            break;
+          default:
+            welcomeTitle.textContent = 'Welcome back!';
+            welcomeText.textContent = `Here's a quick look at what awaits you today.`;
+            setVisitedData();
+            break;
+        }
+      }
+  }
+  }
+  
+  
+ 
+  try {
+    const raw    = localStorage.getItem('vsp_planner_events_v1') || '{}';
+    const events = JSON.parse(raw);
+    const todayStr   = now.toISOString().slice(0, 10);
+    const todayCount = Array.isArray(events[todayStr]) ? events[todayStr].length : 0;
+    document.getElementById('wToday').textContent = todayCount;
+
+  } catch (_) {
+    console.log('ошибка')
+    document.getElementById('wToday').textContent = '0';
+  }
+ 
+  function closeModal() {
+    modal.classList.add('leaving');
+    setTimeout(() => { overlay.style.display = 'none'; }, 180);
+  }
+ 
+  document.getElementById('welcomeClose').addEventListener('click', closeModal);
+  document.getElementById('welcomeStart').addEventListener('click', closeModal);
+  // document.getElementById('welcomeSkip').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => {
+     if (e.target === overlay) closeModal();
+   });
+})();
 
 /* ---------------------------
   Show cat function
@@ -301,13 +429,17 @@ function openEditModal(dateIso, ev){
 
 btnCancel.addEventListener('click', ()=>{
   if (evtDate.value || evtTimeStart.value || evtTimeEnd.value || evtTitle.value || evtType.value) {
-    alertModal(true, "", "Unsaved data will be lost.")
+    showConfirmAlert('Discard changes?', 'You have unsaved changes. Are you sure you want to discard them?');
+  } else {
+    closeModal();
   }
 });
 modalBackdrop.addEventListener('click', (e)=>{
   if(e.target === modalBackdrop){
     if (evtDate.value || evtTimeStart.value || evtTimeEnd.value || evtTitle.value || evtType.value){
-      alertModal(true, "", "Unsaved data will be lost.");
+      showConfirmAlert('Discard changes?', 'You have unsaved changes. Are you sure you want to discard them?');
+    } else {
+      closeModal();
     }
   }
 });
@@ -319,11 +451,9 @@ btnSave.addEventListener('click', ()=>{
   const title = evtTitle.value.trim() || '(no title)';
   const type = evtType.value;
   const notes = evtNotes.value || '';
-  const currentDate = new Date();
-  console.log(date, currentDate)
   
   if(!date ) { 
-    alertModal(false, "Warning!", 'Please choose correct date'); 
+    //
     return; 
   }
 
@@ -344,6 +474,8 @@ btnSave.addEventListener('click', ()=>{
 
   if (type.toLowerCase() == "date") {
     showCat();
+  } else {
+    showAlertModal('Saved', 'Your event has been saved successfully.');
   }
 
   saveEvents();
@@ -356,53 +488,59 @@ function deleteEvent() {
   const list = state.events[state.editing.date] || [];
   state.events[state.editing.date] = list.filter(x=>x.id !== state.editing.id);
   if(state.events[state.editing.date].length === 0) delete state.events[state.editing.date];
-  saveEvents();
-  closeModal();
+  showConfirmAlert();
   renderCalendar();
 }
 
 btnDelete.addEventListener("click", () => {
-  alertModal(true, "", "");
+  deleteEvent();
 })
 
 
-function alertModal(question, title, text) {
-  const btns = document.querySelectorAll(".alert-actions");
-  confirmAlert.style.display = "flex";
+function showConfirmAlert(title, text) {
+  const modal = document.getElementById("confirmAlert");
+  modal.style.display = "flex";
   const yesBtn = document.getElementById("alertYes");
   const noBtn = document.getElementById("alertNo");
-  const okBtn = document.getElementById("alertOk");
-  const textAlert = document.querySelector(".alert-text");
-  const titleAlert = document.querySelector(".alert-title");
+  const confirmTitle = document.getElementById("confirmTitle");
+  const confirmText = document.getElementById("confirmText");
 
-  if (!question) {
-    btns[1].style.display = "none";
-    btns[0].style.display = "block";
-  } if (question) {
-    btns[1].style.display = "block";
-    btns[0].style.display = "none";
+  if (title || text) {
+    confirmTitle.textContent = title || "Are you sure?";
+    confirmText.textContent = text || "This action cannot be undone.";
   }
 
-  title ? titleAlert.innerText = title : titleAlert.innerText = "Are you sure?";
-  text ? textAlert.innerText = text : textAlert.innerText = "This action cannot be undone.";
-
-  noBtn.addEventListener("click", () => {
-    confirmAlert.style.display = "none";
-  });
-
-  okBtn.addEventListener("click", () => {
-    confirmAlert.style.display = "none";
-  });
-
   yesBtn.addEventListener("click", () => {
-    confirmAlert.style.display = "none";
-    if (!state.editing.id) {
+    if(state.editing) {
+      saveEvents();
+      closeModal();
+    } else if(!state.editing && (evtDate.value || evtTimeStart.value || evtTimeEnd.value || evtTitle.value || evtType.value)) {
+      localStorage.removeItem(STORAGE_KEY)
       deleteEvent();
       closeModal();
-    } else {
-      closeModal();
     }
+    modal.style.display = "none";
+  });
 
+  noBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+}
+
+function showAlertModal(title, text) {
+  const modal = document.getElementById("alertModal");
+  modal.style.display = "flex";
+  const okBtn = document.getElementById("alertOk");
+  const alertTitle = document.getElementById("alertTitle");
+  const alertText = document.getElementById("alertText");
+
+  if (title || text) {
+    alertTitle.textContent = title || "Success";
+    alertText.textContent = text || "This action done.";
+  }
+
+  okBtn.addEventListener("click", () => {
+    modal.style.display = "none";
   });
 }
 
@@ -411,6 +549,83 @@ function closeModal(){
   modalBackdrop.style.display = 'none';
   state.editing = null;
 }
+
+// function checkFields() {
+//   const fieldsList = [];
+//   const inputs = document.querySelector(".input-group");
+//   if (!inputs) return fieldsList;
+
+//   inputs.querySelectorAll("input, select, textarea").forEach(input => {
+//     const val = (input.value || '').trim();
+//     if (val === "") {
+//       const label = input.previousElementSibling;
+//       fieldsList.push(label ? label.textContent.trim() : '(unknown field)');
+//     }
+//   });
+
+//   return fieldsList;
+// }
+
+
+// ...existing code...
+function getInvalidRequiredFields(container = document) {
+  const root = (container instanceof Element) ? container : document;
+  const selector = 'input[required], select[required], textarea[required]';
+  const nodes = Array.from(root.querySelectorAll(selector));
+  const invalid = [];
+
+  // helper to test radio group by name
+  const isRadioGroupValid = (name) => {
+    const radios = root.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`);
+    return Array.from(radios).some(r => r.checked);
+  };
+
+  for (const el of nodes) {
+    if (el.disabled) continue; // skip disabled
+    const tag = el.tagName.toLowerCase();
+    const type = el.type && el.type.toLowerCase();
+
+    let ok = true;
+    if (tag === 'select') {
+      ok = (el.value || '').trim() !== '';
+    } else if (type === 'checkbox') {
+      ok = el.checked;
+    } else if (type === 'radio') {
+      // handle radio groups: only validate once per group (validate on first encountered)
+      const name = el.name;
+      if (!name) {
+        ok = el.checked;
+      } else {
+        // if we've already processed a radio with this name, skip adding duplicates
+        const alreadyHandled = invalid.some(x => x.dataset && x.dataset._radioGroup === name);
+        if (alreadyHandled) continue;
+        ok = isRadioGroupValid(name);
+        if (!ok) {
+          // mark a representative element to allow styling the group (use first radio in group)
+          const representative = root.querySelector(`input[type="radio"][name="${CSS.escape(name)}"]`);
+          if (representative) {
+            // attach marker so we don't add duplicate entries for the same group
+            representative.dataset._radioGroup = name;
+            invalid.push(representative);
+          }
+        }
+        continue; // skip normal push below because we already handled group
+      }
+    } else {
+      // inputs and textareas
+      ok = ((el.value || '').trim() !== '');
+    }
+
+    if (!ok) invalid.push(el);
+  }
+
+  // clean any temporary dataset markers used for radio groups
+  invalid.forEach(el => { if (el.dataset && el.dataset._radioGroup) delete el.dataset._radioGroup; });
+
+  return invalid;
+}
+// ...existing code...
+
 
 /* click on event to edit (delegation) */
 calendarGridEl.addEventListener('click', (e)=>{
@@ -463,11 +678,11 @@ document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
   downloadCSVExport();
 });
 document.getElementById('clearAllBtn').addEventListener('click', ()=>{
-  if(confirm('Clear ALL events? This cannot be undone.')) {
+  showConfirmAlert('Clear all events?', 'This will delete all your events for the current month. This action cannot be undone.', ()=>{
     state.events = {};
-    saveEvents();
-    renderCalendar();
-  }
+  });
+  saveEvents();
+  renderCalendar();
 });
 
 /* ---------------------------
